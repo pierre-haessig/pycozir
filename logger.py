@@ -16,7 +16,8 @@ from datetime import datetime
 from cozir import Cozir
 
 
-log_fname = 'cozir_log_2015-09-08.csv'
+log_time = datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
+log_fname = 'cozir_log_{}.csv'.format(log_time)
 sleep_duration = 30 # s
 
 c = Cozir('/dev/ttyUSB0')
