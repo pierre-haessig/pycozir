@@ -8,7 +8,7 @@ It gives a higher level API than the serial communication protocol.
 
 Implemented functionalities:
 
-* data reading(CO2, temperature and humidity)
+* data reading (CO2, temperature and humidity)
 * sensor configuration (digital filter, calibration, ...)
 
 This code is freely available under a 3-Clause BSD license (see `LICENSE <./LICENSE>`_ file).
@@ -35,6 +35,8 @@ Read data from sensors::
 
 note: temperature and humidity sensors are an optional add-on in COZIR sensors.
 
+This module was tested with Python 2.7, under Linux, but is meant to work
+under Windows as well.
 
 Data logger
 -----------
