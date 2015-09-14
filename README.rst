@@ -1,5 +1,5 @@
 Python interface to COZIR CO2 sensors
--------------------------------------
+=====================================
 
 Pierre Haessig, september 2015
 
@@ -32,6 +32,24 @@ Read data from sensors::
     Humid: 39.3 %
 
 note: temperature and humidity sensors are an optional add-on in COZIR sensors.
+
+
+Data logger
+-----------
+
+A simple data logging script is provided.
+It runs from the command line and save the data in CSV format in file::
+
+    $ python logger.py
+    connected to "/dev/ttyUSB0"
+    set operating mode to "polling"
+    logging to "cozir_log_2015-09-14_12-01-10.csv"
+    logging interval: 30 s
+    1077 ppm, 22.0 °C, 52.6 %
+    ...
+
+
+The filename of the logfile is created based on datetime at startup.
 
 
 About the COZIR CO2 sensor
