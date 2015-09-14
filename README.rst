@@ -1,15 +1,17 @@
-Python interface to COZIR CO2 sensors
-=====================================
+PyCOZIR
+=======
 
-Pierre Haessig, september 2015
+PyCOZIR is a Python interface to COZIR™ CO2 sensors.
 
 This module wraps the communication on a serial port with a COZIR CO2 sensor.
 It gives a higher level API than the serial communication protocol.
 
-Functionalities:
+Implemented functionalities:
 
-* reading data (CO2, temperature and humidity)
-* configure the sensor (digital filter, calibration, ...)
+* data reading(CO2, temperature and humidity)
+* sensor configuration (digital filter, calibration, ...)
+
+This code is freely available under a 3-Clause BSD license (see `LICENSE <./LICENSE>`_ file).
 
 
 Usage
@@ -58,4 +60,5 @@ About the COZIR CO2 sensor
 More information on the manufacturer website:
 http://www.gassensing.co.uk/product/cozir-ambient/
 
-
+Note that this software, written by Pierre Haessig, is *not affiliated* with the GSS Ltd.,
+the manufacturer of COZIR™ sensors. Also, COZIR is a trademark of GSS.
