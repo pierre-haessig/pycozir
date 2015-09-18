@@ -44,7 +44,7 @@ Data logger
 A simple data logging script is provided.
 It runs from the command line and save the data in CSV format in file::
 
-    $ python logger.py
+    $ python logger.py /dev/ttyUSB0
     connected to "/dev/ttyUSB0"
     set operating mode to "polling"
     logging to "cozir_log_2015-09-14_12-01-10.csv"
