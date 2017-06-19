@@ -1,10 +1,14 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-# Pierre Haessig — September 2015
 """ Interface to communicate with a COZIR CO2 sensor
 (cf. manufacturer website http://www.gassensing.co.uk/product/cozir-ambient/)
 
 communication is based on USB-TTL cable which connects the sensor to the computer
+
+Pierre Haessig
+
+* September 2015: initial version
+* June 2017: updated to Python 3
 """
 
 from __future__ import division, print_function
@@ -47,10 +51,10 @@ class Cozir(object):
         return "Cozir('{}')".format(self.ser.port)
     
     def write(self, com):
-        '''write the command `com` followed by "\\r\\n"'''
+        '''write the command `com` (bytes) followed by "\\r\\n"'''
         if verbosity >= 2:
             print('writing "{}"'.format(com))
-        self.ser.write(com + '\r\n')
+        self.ser.write(com + b'\r\n')
     
     ### Data Polling commands
     def read_CO2(self, with_filter=True):
@@ -79,9 +83,9 @@ class Cozir(object):
         
         (T command)
         '''
-        self.write('T')
+        self.write(b'T')
         res = self.ser.readline().strip()
-        assert res.startswith('T ')
+        assert res.startswith(b'T ')
         res = (float(res[2:]) - 1000)/10.
         return res
     
@@ -90,9 +94,9 @@ class Cozir(object):
         
         (H command)
         '''
-        self.write('H')
+        self.write(b'H')
         res = self.ser.readline().strip()
-        assert res.startswith('H ')
+        assert res.startswith(b'H ')
         res = float(res[2:])/10.
         return res
     
@@ -102,11 +106,11 @@ class Cozir(object):
         assert isinstance(mode, OpModes)
         if verbosity >= 1:
             print('set operating mode to "{}"'.format(mode.name))
-        self.write('K {:d}'.format(mode.value))
+        self.write(b'K %d' % mode.value)
         
         # Read the response
         res = self.ser.readline().strip()
-        assert res == b'K {:05d}'.format(mode.value)
+        assert res == b'K %05d' % mode.value
         
         self._mode = mode
     
@@ -123,17 +127,17 @@ class Cozir(object):
         Returns a tuple of strings like
         ('Oct 18 2013,14:02:10,AL19', '124584 00000')
         '''
-        self.write('Y')
+        self.write(b'Y')
         res = self.ser.readline()
         res += self.ser.readline()
         res = res.strip()
-        assert res.startswith('Y,')
+        assert res.startswith(b'Y,')
         res = res[2:]
         
         # split firmware and seria number
         fw, sn = res.splitlines()
         
-        assert sn.startswith(' B ')
+        assert sn.startswith(b' B ')
         sn = sn[3:]
         
         return fw, sn
@@ -145,14 +149,14 @@ class Cozir(object):
         
         (* command)
         '''
-        self.write('*')
-        res = ''
+        self.write(b'*')
+        res = b''
         l = self.ser.readline()
         while l:
             res += l
             l = self.ser.readline()
         
-        assert res.startswith(' * ')
+        assert res.startswith(b' * ')
         res = res[3:].strip()
         return res
     
@@ -162,10 +166,10 @@ class Cozir(object):
         
         (. command)
         '''
-        self.write('.')
+        self.write(b'.')
         
         res = self.ser.readline().strip()
-        assert res.startswith('. ')
+        assert res.startswith(b'. ')
         res = float(res[2:])
         
         return res
@@ -173,9 +177,9 @@ class Cozir(object):
     ### Customization commands
     def read_filter(self):
         '''read the setting of the digital filter for the CO2 measurement'''
-        self.write('a')
+        self.write(b'a')
         res = self.ser.readline().strip()
-        assert res.startswith('a ')
+        assert res.startswith(b'a ')
         res = int(res[2:])
         return res
     
@@ -183,12 +187,12 @@ class Cozir(object):
         '''set the setting of the digital filter to `val`, between 0 and 65535'''
         val = int(val)
         assert 0 <= val <= (2**16-1)
-        self.write('A {:d}'.format(val))
+        self.write(b'A %d' % val)
         if verbosity >= 1:
             print('set filter to {:d}'.format(val))
         # Read the response
         res = self.ser.readline().strip()
-        assert res.startswith('A ')
+        assert res.startswith(b'A ')
     
     ### Calibration commands
     def read_autocal(self):
@@ -196,13 +200,13 @@ class Cozir(object):
         
         Returns the tuple (is_active, ini_interv, reg_interv)
         '''
-        self.write('@')
+        self.write(b'@')
         
         res = self.ser.readline().strip()
-        assert res.startswith('@ ')
+        assert res.startswith(b'@ ')
         res = res[2:]
         
-        if res == '0':
+        if res == b'0':
             # autocalibration is disabled
             is_active = False
             ini_interv = None
@@ -210,7 +214,7 @@ class Cozir(object):
         
         else:
             is_active = True
-            ini_interv, reg_interv = res.split(' ')
+            ini_interv, reg_interv = res.split(b' ')
             ini_interv = float(ini_interv)
             reg_interv = float(reg_interv)
         
@@ -224,19 +228,19 @@ class Cozir(object):
         reg_interv: float, regular autocalibration interval in day
         '''
         if not is_active:
-            self.write('@ 0')
+            self.write(b'@ 0')
             
             # Read the response
             res = self.ser.readline().strip()
-            assert res == '@ 0'
+            assert res == b'@ 0'
         else:
             ini_interv = float(ini_interv)
             reg_interv = float(reg_interv)
-            self.write('@ {:.1f} {:.1f}'.format(ini_interv, reg_interv))
+            self.write(b'@ %.1f %.1f' % (ini_interv, reg_interv))
             
             # Read the response
             res = self.ser.readline().strip()
-            assert res.startswith('@ ')
+            assert res.startswith(b'@ ')
 
         
 if __name__ == '__main__':

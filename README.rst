@@ -35,8 +35,14 @@ Read data from sensors::
 
 note: temperature and humidity sensors are an optional add-on in COZIR sensors.
 
-This module was tested with Python 2.7, under Linux, but is meant to work
+
+Compatibility
+-------------
+
+This module was tested with Python 3.6, under Linux, but is meant to work
 under Windows as well.
+
+Not currently tested with Python 2.7, but version *before June 2017* was compatible.
 
 Data logger
 -----------
